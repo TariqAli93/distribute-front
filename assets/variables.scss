@@ -1,0 +1,46 @@
+// Ref: https://github.com/nuxt-community/vuetify-module#customvariables
+//
+// The variables you want to modify
+// $font-size-root: 20px;
+// If you need to extend Vuetify SASS lists
+@import 'https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap';
+$body-font-family: 'Almarai', sans-serif;
+$border-radius-root: 10px;
+$font-size-root: 17px;
+$btn-font-weight: 600;
+
+$primary-dark: #212529;
+$secondary-dark: #343a40;
+$accent-dark: #495057;
+$info-dark: #8ac4ff;
+$warning-dark: #ffd166;
+$error-dark: #ef476f;
+$success-dark: #06d6a0;
+
+// light colors
+$primary-light: #1d3557;
+$secondary-light: #457b9d;
+$accent-light: #dafeff;
+$info-light: #8ac4ff;
+$warning-light: #ffd166;
+$error-light: #ef476f;
+$success-light: #06d6a0;
+
+$material-light: (
+  cards: $secondary-light,
+  'app-bar': $secondary-light,
+  "background": $accent-light,
+);
+
+$material-dark: (
+  cards: $secondary-dark,
+  'app-bar': $primary-dark,
+  "background": $accent-dark,
+);
+
+@import "~vuetify/src/styles/styles.sass";
+
+
+.v-application .elevation-6 {
+  box-shadow: 0 10px 25px 0 rgba($primary-dark, .25) !important;
+}

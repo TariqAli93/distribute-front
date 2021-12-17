@@ -1,0 +1,364 @@
+<template>
+  <div class="teachers-page">
+    <v-card elevation="6" class="pa-5 mb-10">
+      <v-card-title>
+        <h3>البحث عن استاذ</h3>
+        <v-spacer />
+        <v-chep color="primary" elevation="6">
+          مجموع الاساتذة: {{ teacherCount }}
+        </v-chep>
+      </v-card-title>
+
+      <v-divider />
+
+      <v-text-field
+        v-model="search"
+        class="mt-5"
+        label="ابحث في الاساتذة..."
+        color="white"
+        hide-details
+      ></v-text-field>
+    </v-card>
+
+    <v-dialog
+      v-model="updateDialog"
+      persistent
+      max-width="750px"
+      transition="slide-y-transition"
+    >
+      <v-card elevation="6" color="primary" class="pa-10">
+        <v-toolbar color="secondary" elevation="6" rounded class="mb-10">
+          <v-toolbar-title>تحديث الاستاذ</v-toolbar-title>
+
+          <v-spacer />
+          <v-btn icon color="white" @click="CloseUpdateDialog">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-form
+          ref="updateFormRef"
+          v-model="updateForm"
+          lazy-validation
+          @submit.prevent="UpdateTeacher"
+        >
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                v-model="teacherName"
+                label="اسم الاستاذ"
+                outlined
+                color="white"
+                :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12">
+              <v-select
+                v-model="role"
+                :items="roles"
+                item-text="roleName"
+                item-value="idRole"
+                item-color="white"
+                label="اللقب العلمي"
+                outlined
+                color="white"
+                :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <v-btn
+            large
+            block
+            color="secondary"
+            class="white--text"
+            type="submit"
+            :disabled="!updateForm"
+          >
+            حفظ المعلومات
+          </v-btn>
+        </v-form>
+      </v-card>
+    </v-dialog>
+
+    <v-card elevation="6" class="pa-10">
+      <v-data-table :headers="headers" :items="items" :search="search">
+        <template #top>
+          <v-toolbar color="primary" elevation="6" class="mb-10" rounded>
+            <v-toolbar-title>الاساتذة</v-toolbar-title>
+
+            <v-spacer />
+
+            <v-dialog
+              v-model="createDialog"
+              persistent
+              max-width="750px"
+              transition="slide-y-transition"
+            >
+              <template #activator="{ on, attrs }">
+                <v-btn
+                  color="secondary"
+                  elevation="6"
+                  v-bind="attrs"
+                  @click="createDialog = true"
+                  v-on="on"
+                >
+                  ادخال استاذ جديد
+                </v-btn>
+              </template>
+
+              <v-card elevation="6" color="primary" class="pa-10">
+                <v-toolbar
+                  color="secondary"
+                  elevation="6"
+                  rounded
+                  class="mb-10"
+                >
+                  <v-toolbar-title>اضافة استاذ جديد</v-toolbar-title>
+                  <v-spacer />
+                  <v-btn icon color="white" @click="createDialog = false">
+                    <v-icon>close</v-icon>
+                  </v-btn>
+                </v-toolbar>
+
+                <v-form
+                  ref="createFormRef"
+                  v-model="createForm"
+                  lazy-validation
+                  @submit.prevent="CreateTeachers"
+                >
+                  <v-row>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="teacherName"
+                        label="اسم الاستاذ"
+                        outlined
+                        color="white"
+                        :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12">
+                      <v-select
+                        v-model="role"
+                        :items="roles"
+                        item-text="roleName"
+                        item-value="idRole"
+                        item-color="white"
+                        label="اللقب العلمي"
+                        outlined
+                        color="white"
+                        :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
+                      ></v-select>
+                    </v-col>
+                  </v-row>
+
+                  <v-btn
+                    large
+                    block
+                    color="secondary"
+                    class="white--text"
+                    type="submit"
+                    :disabled="!createForm"
+                    >اضافة الاستاذ</v-btn
+                  >
+                </v-form>
+              </v-card>
+            </v-dialog>
+          </v-toolbar>
+        </template>
+
+        <template #[`item.role.rolePriority`]="{ item }">
+          <v-chip color="primary" elevation="6">
+            <span v-if="item.role.rolePriority === 1">مدير القاعة</span>
+            <span v-else-if="item.role.rolePriority === 2">مراقب اول</span>
+            <span v-else-if="item.role.rolePriority === 3">مراقب ثاني</span>
+            <span v-else>مراقب ثالث</span>
+          </v-chip>
+        </template>
+
+        <template #[`item.actions`]="{ item }">
+          <v-btn icon color="warning" @click="OpenUpdateDialog(item)">
+            <v-icon>edit</v-icon>
+          </v-btn>
+
+          <v-btn icon color="error" @click="DeleteTeacher(item)">
+            <v-icon>delete</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
+    </v-card>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'TeacherPage',
+  data() {
+    return {
+      headers: [
+        {
+          text: 'ت',
+          value: 'idTeacher',
+          sortable: false,
+          align: 'start',
+        },
+        {
+          text: 'اسم الاستاذ',
+          value: 'teacherName',
+        },
+        {
+          text: 'اختصار اللقب',
+          value: 'role.rolePrefix',
+        },
+        {
+          text: 'اللقب العلمي',
+          value: 'role.roleName',
+        },
+        {
+          text: 'الاولوية في التوزيع',
+          value: 'role.rolePriority',
+        },
+        {
+          text: 'الاجرائات',
+          value: 'actions',
+        },
+      ],
+      items: [],
+      roles: [],
+      role: null,
+      teacherName: null,
+      createDialog: false,
+      updateDialog: false,
+      createForm: false,
+      updateForm: false,
+      search: null,
+      idTeacher: null,
+      teacherCount: 0,
+    }
+  },
+
+  mounted() {
+    this.GetTeachers()
+    this.GetRoles()
+  },
+
+  methods: {
+    async GetTeachers() {
+      try {
+        const getTeachers = await this.$axios.get('/teachers')
+        this.items = getTeachers.data
+        this.teacherCount = getTeachers.data.length
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async GetRoles() {
+      try {
+        const getRoles = await this.$axios.get('/roles')
+        this.roles = getRoles.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+
+    async CreateTeachers() {
+      if (this.$refs.createFormRef.validate()) {
+        try {
+          const teacher = await this.$axios.post('/teachers/add', {
+            teacherName: this.teacherName,
+            roleId: this.role,
+          })
+          console.log(
+            '🚀 ~ file: teachers.vue ~ line 200 ~ CreateTeachers ~ teacher',
+            teacher.data
+          )
+          this.$toast.success('تم حفظ ملف الاستاذ')
+          this.GetTeachers()
+          this.createDialog = false
+          this.$refs.createFormRef.reset()
+        } catch (error) {
+          console.log(
+            '🚀 ~ file: teachers.vue ~ line 203 ~ CreateTeachers ~ error',
+            error
+          )
+        }
+      }
+    },
+
+    OpenUpdateDialog(item) {
+      this.updateDialog = true
+      this.teacherName = item.teacherName
+      this.role = item.roleId
+      this.idTeacher = item.idTeacher
+    },
+
+    CloseUpdateDialog() {
+      this.$refs.updateFormRef.reset()
+
+      this.teacherName = null
+      this.role = null
+      this.idTeacher = null
+      this.updateDialog = false
+    },
+
+    async UpdateTeacher() {
+      if (this.$refs.updateFormRef.validate()) {
+        try {
+          const updateTeacher = await this.$axios.patch(
+            `/teacher/${this.idTeacher}`,
+            {
+              teacherName: this.teacherName,
+              roleId: this.role,
+            }
+          )
+          console.log(
+            '🚀 ~ file: teachers.vue ~ line 311 ~ UpdateTeacher ~ updateTeacher',
+            updateTeacher
+          )
+          this.$toast.success('تم تحديث ملف الاستاذ بنجاح')
+          this.CloseUpdateDialog()
+          this.GetTeachers()
+        } catch (error) {
+          console.log(
+            '🚀 ~ file: teachers.vue ~ line 314 ~ UpdateTeacher ~ error',
+            error
+          )
+        }
+      }
+    },
+
+    async DeleteTeacher(item) {
+      console.log(
+        '🚀 ~ file: teachers.vue ~ line 219 ~ DeleteTeacher ~ item',
+        item
+      )
+
+      try {
+        if (confirm('هل تريد حذف الاستاذ')) {
+          const deleteTeacher = await this.$axios.delete(
+            `/teacher/${item.idTeacher}`
+          )
+          console.log(
+            '🚀 ~ file: teachers.vue ~ line 226 ~ DeleteTeacher ~ deleteTeacher',
+            deleteTeacher
+          )
+
+          this.$toast.success('تم حذف ملف الاستاذ بنجاح')
+          this.GetTeachers()
+        }
+      } catch (error) {
+        console.log(
+          '🚀 ~ file: teachers.vue ~ line 227 ~ DeleteTeacher ~ error',
+          error
+        )
+      }
+    },
+  },
+}
+</script>
+
+<style>
+</style>
