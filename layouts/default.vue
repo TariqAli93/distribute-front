@@ -17,6 +17,7 @@
         <v-spacer />
 
         <v-list
+          v-if="!$vuetify.breakpoint.mobile"
           dense
           nav
           width="70%"
@@ -30,15 +31,21 @@
             link
             style="margin: 0 10px"
           >
-            <v-list-item-icon>
+            <v-list-item-avatar>
               <v-icon>{{ item.icon }}</v-icon>
-            </v-list-item-icon>
+            </v-list-item-avatar>
 
             <v-list-item-content>
               <v-list-item-title>{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
+
+        <v-row v-else align="center" justify="space-around" style="width: 80%">
+          <v-btn v-for="item in items" :key="item.title" :to="item.to" link icon color="white">
+            <v-icon>{{ item.icon }}</v-icon>
+          </v-btn>
+        </v-row>
 
         <v-spacer />
 
@@ -107,9 +114,19 @@ export default {
           to: '/halls',
         },
         {
+          icon: 'group_work',
+          title: 'المجموعات',
+          to: '/groups',
+        },
+        {
           icon: 'dashboard',
           title: 'التوزيع',
           to: '/distribute',
+        },
+        {
+          icon: 'group_add',
+          title: 'المستخدمين',
+          to: '/users',
         },
       ],
       title: 'Vuetify.js',

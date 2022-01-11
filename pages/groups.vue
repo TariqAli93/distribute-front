@@ -2,7 +2,7 @@
   <div class="name-page">
     <v-card elevation="6" class="pa-5 mb-10">
       <v-card-title>
-        <h3>البحث...</h3>
+        <h3>البحث عن مجموعة</h3>
         <v-spacer />
         <v-chep color="primary" elevation="6"> رقم: 0 </v-chep>
       </v-card-title>
@@ -12,24 +12,24 @@
       <v-text-field
         v-model="search"
         class="mt-5"
-        label="ابحث..."
+        label="ابحث في المجموعات"
         color="white"
         hide-details
       ></v-text-field>
     </v-card>
 
     <v-dialog
-      v-model="dialog"
+      v-model="updateDialog"
       persistent
       max-width="750px"
       transition="slide-y-transition"
     >
       <v-card elevation="6" color="primary" class="pa-10">
         <v-toolbar color="secondary" elevation="6" rounded class="mb-10">
-          <v-toolbar-title>dialog</v-toolbar-title>
+          <v-toolbar-title>تحديث المجموعة</v-toolbar-title>
 
           <v-spacer />
-          <v-btn icon color="white" @click="dialog = false">
+          <v-btn icon color="white" @click="updateDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
         </v-toolbar>
@@ -162,8 +162,8 @@ export default {
   name: 'GroupPage',
   data() {
     return {
-      dialog: false,
-      dialog2: false,
+      updateDialog: false,
+      createDialog: false,
       search: '',
       headers: [
         {
