@@ -123,11 +123,11 @@ export default {
           title: 'التوزيع',
           to: '/distribute',
         },
-        {
-          icon: 'group_add',
-          title: 'المستخدمين',
-          to: '/users',
-        },
+        // {
+        //   icon: 'group_add',
+        //   title: 'المستخدمين',
+        //   to: '/users',
+        // },
       ],
       title: 'Vuetify.js',
     }
