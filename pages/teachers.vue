@@ -57,10 +57,8 @@
               <v-select
                 v-model="role"
                 :items="roles"
-                item-text="roleName"
-                item-value="idRole"
                 item-color="white"
-                label="اللقب العلمي"
+                label="الصلاحيات"
                 outlined
                 color="white"
                 :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
@@ -143,10 +141,8 @@
                       <v-select
                         v-model="role"
                         :items="roles"
-                        item-text="roleName"
-                        item-value="idRole"
                         item-color="white"
-                        label="اللقب العلمي"
+                        label="الصلاحيات"
                         outlined
                         color="white"
                         :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
@@ -171,10 +167,7 @@
 
         <template #[`item.role.rolePriority`]="{ item }">
           <v-chip color="primary" elevation="6">
-            <span v-if="item.role.rolePriority === 1">مدير القاعة</span>
-            <span v-else-if="item.role.rolePriority === 2">مراقب اول</span>
-            <span v-else-if="item.role.rolePriority === 3">مراقب ثاني</span>
-            <span v-else>مراقب ثالث</span>
+            <span>{{ item | getRole }}</span>
           </v-chip>
         </template>
 
@@ -195,6 +188,12 @@
 <script>
 export default {
   name: 'TeacherPage',
+
+  filters: {
+    getRole(item) {
+      return item.role === 'CHIEF' ? 'مدير قاعة' : 'مساعد مدير'
+    },
+  },
   data() {
     return {
       headers: [
@@ -209,15 +208,7 @@ export default {
           value: 'teacherName',
         },
         {
-          text: 'اختصار اللقب',
-          value: 'role.rolePrefix',
-        },
-        {
-          text: 'اللقب العلمي',
-          value: 'role.roleName',
-        },
-        {
-          text: 'الاولوية في التوزيع',
+          text: 'الصلاحيات',
           value: 'role.rolePriority',
         },
         {
@@ -226,7 +217,10 @@ export default {
         },
       ],
       items: [],
-      roles: [],
+      roles: [
+        { text: 'مدير قاعة', value: 'CHIEF' },
+        { text: 'مساعد', value: 'ASSISTANT' },
+      ],
       role: null,
       teacherName: null,
       createDialog: false,
@@ -241,7 +235,6 @@ export default {
 
   mounted() {
     this.GetTeachers()
-    this.GetRoles()
   },
 
   methods: {
@@ -255,21 +248,12 @@ export default {
       }
     },
 
-    async GetRoles() {
-      try {
-        const getRoles = await this.$axios.get('/roles')
-        this.roles = getRoles.data
-      } catch (error) {
-        console.error(error)
-      }
-    },
-
     async CreateTeachers() {
       if (this.$refs.createFormRef.validate()) {
         try {
           const teacher = await this.$axios.post('/teachers/add', {
             teacherName: this.teacherName,
-            roleId: this.role,
+            role: this.role,
           })
           console.log(
             '🚀 ~ file: teachers.vue ~ line 200 ~ CreateTeachers ~ teacher',
@@ -291,7 +275,7 @@ export default {
     OpenUpdateDialog(item) {
       this.updateDialog = true
       this.teacherName = item.teacherName
-      this.role = item.roleId
+      this.role = item.role
       this.idTeacher = item.idTeacher
     },
 
@@ -311,7 +295,7 @@ export default {
             `/teacher/${this.idTeacher}`,
             {
               teacherName: this.teacherName,
-              roleId: this.role,
+              role: this.role,
             }
           )
           console.log(

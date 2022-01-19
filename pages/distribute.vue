@@ -7,8 +7,8 @@
 
       <v-divider />
       <v-form
-        v-model="distributeForm"
         ref="distributeRef"
+        v-model="distributeForm"
         lazy-validation
         @submit.prevent="distribute"
       >
@@ -59,6 +59,8 @@
 </template>
 
 <script>
+// import _ from 'lodash'
+const ExcelJS = require('exceljs')
 export default {
   name: 'DistributePage',
   data() {
@@ -84,7 +86,6 @@ export default {
       try {
         const teachers = await this.$axios.get('teachers')
         this.teachers = teachers.data
-        console.log(teachers.data)
       } catch (error) {
         console.error(error)
       }
@@ -93,7 +94,6 @@ export default {
       try {
         const halls = await this.$axios.get('halls')
         this.halls = halls.data
-        console.log(halls.data)
       } catch (error) {
         console.error(error)
       }
@@ -108,31 +108,72 @@ export default {
     },
 
     distribute() {
-      if (this.$refs.distributeRef.validate()) {
-        console.log({ halls: this.theHalls, group: this.theGroup })
-        const selectedHalls = this.theHalls
+      // array of chiefs
+      const chiefs = this.teachers.filter((teacher) => teacher.role === 'CHIEF')
 
-        const distributed = [
-          
-        ]
+      // array of assistants
+      const assistants = this.teachers.filter(
+        (teacher) => teacher.role === 'ASSISTANT'
+      )
 
-        // for (let i = 0; i < selectedHalls.length; i++) {
-        //   distributed.push({
-        //     group: this.theGroup.GroupName,
-        //     leader: this.teachers.map((teacher) => {
-        //       return (
-        //         teacher.role.rolePriority ===
-        //         this.teachers.reduce(
-        //           (prev, curr) =>
-        //             prev < curr.role.rolePriority
-        //         )
-        //       )
-        //     }),
-        //   })
+      // array of remaining chiefs
+      let remainingChiefs = []
 
-        //   console.log(distributed)
-        // }
+      // array of remaining assistants
+      let remainingAssistants = []
+
+      const eachHall = []
+      const randomChief = Math.floor(Math.random() * chiefs.length)
+
+      for (let i = 0; i < this.theHalls.length; i++) {
+        const HallContainment = this.theHalls[i].HallContainment
+        const assistant = []
+        let assistantsIndex = null
+        const chiefsIndex = chiefs.indexOf(chiefs[randomChief])
+
+        for (let j = 0; j < HallContainment - 1; j++) {
+          const randomAssistants = Math.floor(Math.random() * assistants.length)
+          assistantsIndex = assistants[randomAssistants]
+          assistant.push(assistants[randomAssistants])
+        }
+
+        eachHall.push({
+          HallName: this.theHalls[i].HallName,
+          chief: chiefs[randomChief],
+          assistants: assistant,
+        })
+
+        chiefs.splice(chiefsIndex, 1)
+        assistants.splice(assistantsIndex, 1)
       }
+
+      remainingChiefs = chiefs
+      remainingAssistants = assistants
+
+      const toExport = {
+        group: this.theGroup,
+        hall: eachHall,
+        remaining: {
+          chiefs: remainingChiefs,
+          assistants: remainingAssistants,
+        },
+      }
+
+      const workbook = new ExcelJS.Workbook()
+      const sheet = workbook.addWorksheet('توزيع الاساتذة', {
+        properties: { tabColor: { argb: 'FF00FF00' } },
+      })
+
+      sheet.columns = [
+        { header: 'القاعة', key: 'HallName', width: 10, outlineLevel: 1 },
+        { header: 'رئيس القاعة', key: 'cheifs', width: 32, outlineLevel: 1 },
+        { header: 'المساعد', key: 'assistants', width: 10, outlineLevel: 1 },
+      ]
+
+      const newRows = sheet.addRows(eachHall)
+
+      console.log(toExport);
+      console.log(newRows);
     },
   },
 }

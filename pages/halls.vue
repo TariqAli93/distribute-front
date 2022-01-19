@@ -61,7 +61,6 @@
                 outlined
                 color="white"
                 type="number"
-                :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
               ></v-text-field>
             </v-col>
           </v-row>
@@ -144,7 +143,6 @@
                         outlined
                         color="white"
                         type="number"
-                        :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
                       ></v-text-field>
                     </v-col>
                   </v-row>
@@ -181,7 +179,7 @@
 
 <script>
 export default {
-  name: 'hallsPage',
+  name: 'HallsPage',
   data() {
     return {
       updateDialog: false,
