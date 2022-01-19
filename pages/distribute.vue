@@ -60,6 +60,7 @@
 
 <script>
 // import _ from 'lodash'
+// import moment from 'moment'
 const ExcelJS = require('exceljs')
 export default {
   name: 'DistributePage',
@@ -108,6 +109,19 @@ export default {
     },
 
     distribute() {
+      const workbook = new ExcelJS.Workbook()
+      const worksheet = workbook.addWorksheet('جدول المراقبات - الاساتذة')
+      worksheet.views = [{ rightToLeft: true }]
+
+      worksheet.columns = [
+        { header: 'اسم القاعة', key: 'hallName', width: 55 },
+        { header: 'رئيس القاعة', key: 'chief', width: 55 },
+        { header: 'المساعد الاول', key: 'assistantOne', width: 55 },
+        { header: 'المساعد الثاني	', key: 'assistantTwo', width: 55 },
+        { header: 'المساعد الثالث', key: 'assistantThree', width: 55 },
+        { header: 'المساعد الرابع', key: 'assistantFour', width: 55 },
+      ]
+
       // array of chiefs
       const chiefs = this.teachers.filter((teacher) => teacher.role === 'CHIEF')
 
@@ -116,13 +130,8 @@ export default {
         (teacher) => teacher.role === 'ASSISTANT'
       )
 
-      // array of remaining chiefs
-      let remainingChiefs = []
-
-      // array of remaining assistants
-      let remainingAssistants = []
-
       const eachHall = []
+      // const date = moment(new Date()).format("YYYY-MM-DD")
       const randomChief = Math.floor(Math.random() * chiefs.length)
 
       for (let i = 0; i < this.theHalls.length; i++) {
@@ -147,33 +156,43 @@ export default {
         assistants.splice(assistantsIndex, 1)
       }
 
-      remainingChiefs = chiefs
-      remainingAssistants = assistants
+      // const remainingChiefs = chiefs
+      // const remainingAssistants = assistants
 
-      const toExport = {
-        group: this.theGroup,
-        hall: eachHall,
-        remaining: {
-          chiefs: remainingChiefs,
-          assistants: remainingAssistants,
-        },
-      }
-
-      const workbook = new ExcelJS.Workbook()
-      const sheet = workbook.addWorksheet('توزيع الاساتذة', {
-        properties: { tabColor: { argb: 'FF00FF00' } },
+      eachHall.forEach((hall) => {
+        worksheet.addRow({
+          hallName: hall.HallName,
+          chief: hall.chief.teacherName,
+          assistantOne: hall.assistants[0].teacherName,
+          assistantTwo:
+            hall.assistants.length > 1
+              ? hall.assistants[1].teacherName
+              : 'لا يوجد',
+          assistantThree:
+            hall.assistants.length > 2
+              ? hall.assistants[2].teacherName
+              : 'لا يوجد',
+          assistantFour:
+            hall.assistants.length > 3
+              ? hall.assistants[3].teacherName
+              : 'لا يوجد',
+        })
       })
 
-      sheet.columns = [
-        { header: 'القاعة', key: 'HallName', width: 10, outlineLevel: 1 },
-        { header: 'رئيس القاعة', key: 'cheifs', width: 32, outlineLevel: 1 },
-        { header: 'المساعد', key: 'assistants', width: 10, outlineLevel: 1 },
-      ]
-
-      const newRows = sheet.addRows(eachHall)
-
-      console.log(toExport);
-      console.log(newRows);
+      workbook.xlsx.writeBuffer().then((data) => {
+        const blob = new Blob([data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        })
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        document.body.appendChild(a)
+        a.setAttribute('style', 'display: none')
+        a.href = url
+        a.download = `جدول المراقبات.xlsx`
+        a.click()
+        window.URL.revokeObjectURL(url)
+        a.remove()
+      })
     },
   },
 }
