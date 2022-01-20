@@ -17,6 +17,11 @@ export default {
     'material-design-icons-iconfont/dist/material-design-icons.css'
   ],
 
+  server: {
+    port: 5678,
+    host: '0'
+  },
+
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
 
