@@ -1,12 +1,12 @@
 <template>
-  <div class="name-page">
+  <div class="halls-page">
     <v-card elevation="6" class="pa-5 mb-10">
       <v-card-title>
         <h3>البحث عن قاعة</h3>
         <v-spacer />
-        <v-chep color="primary" elevation="6">
+        <v-chip color="primary" elevation="6">
           مجموع القاعات: {{ hallsCount }}
-        </v-chep>
+        </v-chip>
       </v-card-title>
 
       <v-divider />

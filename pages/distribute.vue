@@ -60,7 +60,7 @@
 
 <script>
 // import _ from 'lodash'
-// import moment from 'moment'
+import moment from 'moment'
 const ExcelJS = require('exceljs')
 export default {
   name: 'DistributePage',
@@ -113,14 +113,82 @@ export default {
       const worksheet = workbook.addWorksheet('جدول المراقبات - الاساتذة')
       worksheet.views = [{ rightToLeft: true }]
 
-      worksheet.columns = [
-        { header: 'اسم القاعة', key: 'hallName', width: 55 },
-        { header: 'رئيس القاعة', key: 'chief', width: 55 },
-        { header: 'المساعد الاول', key: 'assistantOne', width: 55 },
-        { header: 'المساعد الثاني	', key: 'assistantTwo', width: 55 },
-        { header: 'المساعد الثالث', key: 'assistantThree', width: 55 },
-        { header: 'المساعد الرابع', key: 'assistantFour', width: 55 },
+      worksheet.getCell(`A1`).value = 'جامعة دجلة' // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
+      worksheet.mergeCells('A1:F1') // Extend cell over all column headers
+      worksheet.getCell(`A1`).alignment = { horizontal: 'center' } // Horizontally center your text
+
+      worksheet.getCell(`A2`).value = `التاريخ: ${moment(new Date()).format(
+        'YYYY-MM-DD'
+      )}` // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
+      worksheet.mergeCells('A2:C2') // Extend cell over all column headers
+      worksheet.getCell(`A2`).alignment = { horizontal: 'center' } // Horizontally center your text
+
+      worksheet.getCell(`D2`).value = `المجموعة: ${this.theGroup.GroupName}` // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
+      worksheet.mergeCells('D2:F2') // Extend cell over all column headers
+      worksheet.getCell(`D2`).alignment = { horizontal: 'center' } // Horizontally center your text
+
+      worksheet.getRow(1).eachCell((cell) => {
+        cell.font = {
+          name: 'Comic Sans MS',
+          family: 4,
+          size: 20,
+          underline: false,
+          bold: true,
+        }
+
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: {
+            argb: 'cccccccc',
+          },
+        }
+      })
+
+      worksheet.getRow(3).values = [
+        'اسم القاعة',
+        'رئيس القاعة',
+        'المساعد الاول',
+        'المساعد الثاني',
+        'المساعد الثالث',
+        'المساعد الرابع',
       ]
+
+      worksheet.columns = [
+        { key: 'hallName', width: 55 },
+        { key: 'chief', width: 55 },
+        { key: 'assistantOne', width: 55 },
+        { key: 'assistantTwo', width: 55 },
+        { key: 'assistantThree', width: 55 },
+        { key: 'assistantFour', width: 55 },
+      ]
+
+      worksheet.getRow(2).eachCell((cell) => {
+        cell.font = {
+          name: 'Comic Sans MS',
+          family: 4,
+          size: 11,
+          underline: false,
+          bold: true,
+        }
+
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: {
+            argb: 'eeeeeeee',
+          },
+        }
+      })
+
+      // worksheet.columns = [
+      //   { header: 'اسم القاعة', key: 'hallName', width: 55 },
+      //   { header: 'رئيس القاعة', key: 'chief', width: 55 },
+      //   { header: 'المساعد الاول', key: 'assistantOne', width: 55 },
+      //   { header: 'المساعد الثاني	', key: 'assistantTwo', width: 55 },
+      //   { header: 'المساعد الثالث', key: 'assistantThree', width: 55 },
+      //   { header: 'المساعد الرابع', key: 'assistantFour', width: 55 },
+      // ]
 
       // array of chiefs
       const chiefs = this.teachers.filter((teacher) => teacher.role === 'CHIEF')
@@ -179,6 +247,25 @@ export default {
         })
       })
 
+      worksheet.getRow(3).eachCell((cell) => {
+        cell.font = {
+          name: 'Comic Sans MS',
+          family: 4,
+          size: 16,
+          underline: false,
+          bold: true,
+        }
+      })
+
+      worksheet.columns.forEach((column) => {
+        column.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' },
+        }
+      })
+
       workbook.xlsx.writeBuffer().then((data) => {
         const blob = new Blob([data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -188,7 +275,7 @@ export default {
         document.body.appendChild(a)
         a.setAttribute('style', 'display: none')
         a.href = url
-        a.download = `جدول المراقبات.xlsx`
+        a.download = `جدول المراقبات - ${this.theGroup.GroupName}.xlsx`
         a.click()
         window.URL.revokeObjectURL(url)
         a.remove()

@@ -1,12 +1,12 @@
 <template>
-  <div class="name-page">
+  <div class="groups-page">
     <v-card elevation="6" class="pa-5 mb-10">
       <v-card-title>
         <h3>البحث عن مجموعة</h3>
         <v-spacer />
-        <v-chep color="primary" elevation="6">
+        <v-chip color="primary" elevation="6">
           المجموعات: {{ items.length }}
-        </v-chep>
+        </v-chip>
       </v-card-title>
 
       <v-divider />

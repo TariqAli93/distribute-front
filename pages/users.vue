@@ -1,10 +1,10 @@
 <template>
-  <div class="name-page">
+  <div class="users-page">
     <v-card elevation="6" class="pa-5 mb-10">
       <v-card-title>
         <h3>البحث...</h3>
         <v-spacer />
-        <v-chep color="primary" elevation="6"> رقم: 0 </v-chep>
+        <v-chip color="primary" elevation="6"> رقم: 0 </v-chip>
       </v-card-title>
 
       <v-divider />
@@ -159,7 +159,7 @@
 
 <script>
 export default {
-  name: 'GroupPage',
+  name: 'UsersPage',
   data() {
     return {
       dialog: false,

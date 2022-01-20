@@ -4,9 +4,9 @@
       <v-card-title>
         <h3>البحث عن استاذ</h3>
         <v-spacer />
-        <v-chep color="primary" elevation="6">
+        <v-chip color="primary" elevation="6">
           مجموع الاساتذة: {{ teacherCount }}
-        </v-chep>
+        </v-chip>
       </v-card-title>
 
       <v-divider />
