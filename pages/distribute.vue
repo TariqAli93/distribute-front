@@ -109,177 +109,174 @@ export default {
     },
 
     distribute() {
-      const workbook = new ExcelJS.Workbook()
-      const worksheet = workbook.addWorksheet('جدول المراقبات - الاساتذة')
-      worksheet.views = [{ rightToLeft: true }]
+      if (this.$refs.distributeRef.validate()) {
+        const workbook = new ExcelJS.Workbook()
+        const worksheet = workbook.addWorksheet('جدول المراقبات - الاساتذة')
+        worksheet.views = [{ rightToLeft: true }]
 
-      worksheet.getCell(`A1`).value = 'جامعة دجلة' // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
-      worksheet.mergeCells('A1:F1') // Extend cell over all column headers
-      worksheet.getCell(`A1`).alignment = { horizontal: 'center' } // Horizontally center your text
+        worksheet.getCell(`A1`).value = 'جامعة دجلة' // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
+        worksheet.mergeCells('A1:F1') // Extend cell over all column headers
+        worksheet.getCell(`A1`).alignment = { horizontal: 'center' } // Horizontally center your text
 
-      worksheet.getCell(`A2`).value = `التاريخ: ${moment(new Date()).format(
-        'YYYY-MM-DD'
-      )}` // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
-      worksheet.mergeCells('A2:C2') // Extend cell over all column headers
-      worksheet.getCell(`A2`).alignment = { horizontal: 'center' } // Horizontally center your text
+        worksheet.getCell(`A2`).value = `التاريخ: ${moment(new Date()).format(
+          'YYYY-MM-DD'
+        )}` // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
+        worksheet.mergeCells('A2:C2') // Extend cell over all column headers
+        worksheet.getCell(`A2`).alignment = { horizontal: 'center' } // Horizontally center your text
 
-      worksheet.getCell(`D2`).value = `المجموعة: ${this.theGroup.GroupName}` // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
-      worksheet.mergeCells('D2:F2') // Extend cell over all column headers
-      worksheet.getCell(`D2`).alignment = { horizontal: 'center' } // Horizontally center your text
+        worksheet.getCell(`D2`).value = `المجموعة: ${this.theGroup.GroupName}` // Assign title to cell A1 -- THIS IS WHAT YOU'RE LOOKING FOR.
+        worksheet.mergeCells('D2:F2') // Extend cell over all column headers
+        worksheet.getCell(`D2`).alignment = { horizontal: 'center' } // Horizontally center your text
 
-      worksheet.getRow(1).eachCell((cell) => {
-        cell.font = {
-          name: 'Comic Sans MS',
-          family: 4,
-          size: 20,
-          underline: false,
-          bold: true,
-        }
+        worksheet.getRow(1).eachCell((cell) => {
+          cell.font = {
+            name: 'Comic Sans MS',
+            family: 4,
+            size: 20,
+            underline: false,
+            bold: true,
+          }
 
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: {
-            argb: 'cccccccc',
-          },
-        }
-      })
-
-      worksheet.getRow(3).values = [
-        'اسم القاعة',
-        'رئيس القاعة',
-        'المساعد الاول',
-        'المساعد الثاني',
-        'المساعد الثالث',
-        'المساعد الرابع',
-      ]
-
-      worksheet.columns = [
-        { key: 'hallName', width: 55 },
-        { key: 'chief', width: 55 },
-        { key: 'assistantOne', width: 55 },
-        { key: 'assistantTwo', width: 55 },
-        { key: 'assistantThree', width: 55 },
-        { key: 'assistantFour', width: 55 },
-      ]
-
-      worksheet.getRow(2).eachCell((cell) => {
-        cell.font = {
-          name: 'Comic Sans MS',
-          family: 4,
-          size: 11,
-          underline: false,
-          bold: true,
-        }
-
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: {
-            argb: 'eeeeeeee',
-          },
-        }
-      })
-
-      // worksheet.columns = [
-      //   { header: 'اسم القاعة', key: 'hallName', width: 55 },
-      //   { header: 'رئيس القاعة', key: 'chief', width: 55 },
-      //   { header: 'المساعد الاول', key: 'assistantOne', width: 55 },
-      //   { header: 'المساعد الثاني	', key: 'assistantTwo', width: 55 },
-      //   { header: 'المساعد الثالث', key: 'assistantThree', width: 55 },
-      //   { header: 'المساعد الرابع', key: 'assistantFour', width: 55 },
-      // ]
-
-      // array of chiefs
-      const chiefs = this.teachers.filter((teacher) => teacher.role === 'CHIEF')
-
-      // array of assistants
-      const assistants = this.teachers.filter(
-        (teacher) => teacher.role === 'ASSISTANT'
-      )
-
-      const eachHall = []
-      // const date = moment(new Date()).format("YYYY-MM-DD")
-      const randomChief = Math.floor(Math.random() * chiefs.length)
-
-      for (let i = 0; i < this.theHalls.length; i++) {
-        const HallContainment = this.theHalls[i].HallContainment
-        const assistant = []
-        let assistantsIndex = null
-        const chiefsIndex = chiefs.indexOf(chiefs[randomChief])
-
-        for (let j = 0; j < HallContainment - 1; j++) {
-          const randomAssistants = Math.floor(Math.random() * assistants.length)
-          assistantsIndex = assistants[randomAssistants]
-          assistant.push(assistants[randomAssistants])
-        }
-
-        eachHall.push({
-          HallName: this.theHalls[i].HallName,
-          chief: chiefs[randomChief],
-          assistants: assistant,
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {
+              argb: 'cccccccc',
+            },
+          }
         })
 
-        chiefs.splice(chiefsIndex, 1)
-        assistants.splice(assistantsIndex, 1)
+        worksheet.getRow(3).values = [
+          'اسم القاعة',
+          'رئيس القاعة',
+          'المساعد الاول',
+          'المساعد الثاني',
+          'المساعد الثالث',
+          'المساعد الرابع',
+        ]
+
+        worksheet.columns = [
+          { key: 'hallName', width: 55 },
+          { key: 'chief', width: 55 },
+          { key: 'assistantOne', width: 55 },
+          { key: 'assistantTwo', width: 55 },
+          { key: 'assistantThree', width: 55 },
+          { key: 'assistantFour', width: 55 },
+        ]
+
+        worksheet.getRow(2).eachCell((cell) => {
+          cell.font = {
+            name: 'Comic Sans MS',
+            family: 4,
+            size: 11,
+            underline: false,
+            bold: true,
+          }
+
+          cell.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: {
+              argb: 'eeeeeeee',
+            },
+          }
+        })
+
+        // array of chiefs
+        const chiefs = this.teachers.filter(
+          (teacher) => teacher.role === 'CHIEF'
+        )
+
+        // array of assistants
+        const assistants = this.teachers.filter(
+          (teacher) => teacher.role === 'ASSISTANT'
+        )
+
+        const eachHall = []
+        // const date = moment(new Date()).format("YYYY-MM-DD")
+        const randomChief = Math.floor(Math.random() * chiefs.length)
+
+        for (let i = 0; i < this.theHalls.length; i++) {
+          const HallContainment = this.theHalls[i].HallContainment
+          const assistant = []
+          let assistantsIndex = null
+          const chiefsIndex = chiefs.indexOf(chiefs[randomChief])
+
+          for (let j = 0; j < HallContainment - 1; j++) {
+            const randomAssistants = Math.floor(
+              Math.random() * assistants.length
+            )
+            assistantsIndex = assistants[randomAssistants]
+            assistant.push(assistants[randomAssistants])
+          }
+
+          eachHall.push({
+            HallName: this.theHalls[i].HallName,
+            chief: chiefs[randomChief],
+            assistants: assistant,
+          })
+
+          chiefs.splice(chiefsIndex, 1)
+          assistants.splice(assistantsIndex, 1)
+        }
+
+        // const remainingChiefs = chiefs
+        // const remainingAssistants = assistants
+
+        eachHall.forEach((hall) => {
+          worksheet.addRow({
+            hallName: hall.HallName,
+            chief: hall.chief.teacherName,
+            assistantOne: hall.assistants[0].teacherName,
+            assistantTwo:
+              hall.assistants.length > 1
+                ? hall.assistants[1].teacherName
+                : 'لا يوجد',
+            assistantThree:
+              hall.assistants.length > 2
+                ? hall.assistants[2].teacherName
+                : 'لا يوجد',
+            assistantFour:
+              hall.assistants.length > 3
+                ? hall.assistants[3].teacherName
+                : 'لا يوجد',
+          })
+        })
+
+        worksheet.getRow(3).eachCell((cell) => {
+          cell.font = {
+            name: 'Comic Sans MS',
+            family: 4,
+            size: 16,
+            underline: false,
+            bold: true,
+          }
+        })
+
+        worksheet.columns.forEach((column) => {
+          column.border = {
+            top: { style: 'thin' },
+            left: { style: 'thin' },
+            bottom: { style: 'thin' },
+            right: { style: 'thin' },
+          }
+        })
+
+        workbook.xlsx.writeBuffer().then((data) => {
+          const blob = new Blob([data], {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          })
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          document.body.appendChild(a)
+          a.setAttribute('style', 'display: none')
+          a.href = url
+          a.download = `جدول المراقبات - ${this.theGroup.GroupName}.xlsx`
+          a.click()
+          window.URL.revokeObjectURL(url)
+          a.remove()
+        })
       }
-
-      // const remainingChiefs = chiefs
-      // const remainingAssistants = assistants
-
-      eachHall.forEach((hall) => {
-        worksheet.addRow({
-          hallName: hall.HallName,
-          chief: hall.chief.teacherName,
-          assistantOne: hall.assistants[0].teacherName,
-          assistantTwo:
-            hall.assistants.length > 1
-              ? hall.assistants[1].teacherName
-              : 'لا يوجد',
-          assistantThree:
-            hall.assistants.length > 2
-              ? hall.assistants[2].teacherName
-              : 'لا يوجد',
-          assistantFour:
-            hall.assistants.length > 3
-              ? hall.assistants[3].teacherName
-              : 'لا يوجد',
-        })
-      })
-
-      worksheet.getRow(3).eachCell((cell) => {
-        cell.font = {
-          name: 'Comic Sans MS',
-          family: 4,
-          size: 16,
-          underline: false,
-          bold: true,
-        }
-      })
-
-      worksheet.columns.forEach((column) => {
-        column.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' },
-        }
-      })
-
-      workbook.xlsx.writeBuffer().then((data) => {
-        const blob = new Blob([data], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        })
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        document.body.appendChild(a)
-        a.setAttribute('style', 'display: none')
-        a.href = url
-        a.download = `جدول المراقبات - ${this.theGroup.GroupName}.xlsx`
-        a.click()
-        window.URL.revokeObjectURL(url)
-        a.remove()
-      })
     },
   },
 }

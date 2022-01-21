@@ -1,8 +1,8 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: '%s - distribute-front',
-    title: 'distribute-front',
+    titleTemplate: '%s - برنامج توزيع الاساتذة',
+    title: 'جدول المراقبات',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -17,10 +17,6 @@ export default {
     'material-design-icons-iconfont/dist/material-design-icons.css'
   ],
 
-  server: {
-    port: 5678,
-    host: '0'
-  },
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -55,8 +51,14 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'http://109.224.62.102:6789/api/',
+    // baseURL: 'http://109.224.62.102:6789/api/',
+    baseURL: 'http://localhost:6789/api/',
   },
+
+  // server: {
+  //   port: 5678,
+  //   host: '0'
+  // },
 
   toast: {
     position: 'top-center',
