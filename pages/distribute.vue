@@ -109,7 +109,7 @@ export default {
     },
 
     distribute() {
-      if (this.$refs.distributeRef.validate()) {
+      if (this.$refs.distributeRef.validate() && this.teachers.length > 0) {
         const workbook = new ExcelJS.Workbook()
         const worksheet = workbook.addWorksheet('جدول المراقبات - الاساتذة')
         worksheet.views = [{ rightToLeft: true }]
