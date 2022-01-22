@@ -91,7 +91,7 @@ export default {
   }
 
   span {
-    font-size: 3.5em;
+    font-size: 2.5em;
     font-weight: lighter;
   }
 
