@@ -162,6 +162,17 @@
                 </v-form>
               </v-card>
             </v-dialog>
+
+            <v-btn icon color="success" class="mr-5" @click="uploadHandler">
+              <v-icon>cloud_upload</v-icon>
+            </v-btn>
+
+            <input
+              ref="excelFile"
+              type="file"
+              class="d-none"
+              @change="uploadTheExcel"
+            />
           </v-toolbar>
         </template>
 
@@ -238,6 +249,25 @@ export default {
   },
 
   methods: {
+    uploadHandler() {
+      this.$refs.excelFile.click()
+    },
+
+    uploadTheExcel() {
+      const File = this.$refs.excelFile.files[0]
+      const Form = new FormData()
+      Form.append('excel', File)
+
+      this.$axios
+        .post('upload-teacher', Form)
+        .then((result) => {
+          console.log(result)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+
     async GetTeachers() {
       try {
         const getTeachers = await this.$axios.get('/teachers')
