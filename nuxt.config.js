@@ -51,9 +51,9 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     // Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-    baseURL: 'http://109.224.62.102:6789/api/',
+    // baseURL: 'http://109.224.62.102:6789/api/',
     // baseURL: 'http://localhost:6789/api/',
-    // baseURL: 'http://10.0.6.64:6789/api/'
+    baseURL: 'http://10.0.6.64:6789/api/'
   },
 
   server: {
