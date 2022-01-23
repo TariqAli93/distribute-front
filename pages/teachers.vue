@@ -171,6 +171,7 @@
               ref="excelFile"
               type="file"
               class="d-none"
+              accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
               @change="uploadTheExcel"
             />
           </v-toolbar>
@@ -261,7 +262,9 @@ export default {
       this.$axios
         .post('upload-teacher', Form)
         .then((result) => {
+          this.$toast.success('تم رفع الملف و اضافة الاساتذة بنجاح')
           console.log(result)
+          this.GetTeachers()
         })
         .catch((err) => {
           console.log(err)
@@ -271,7 +274,7 @@ export default {
     async GetTeachers() {
       try {
         const getTeachers = await this.$axios.get('/teachers')
-        this.items = getTeachers.data
+        this.items = getTeachers.data.reverse()
         this.teacherCount = getTeachers.data.length
       } catch (error) {
         console.error(error)

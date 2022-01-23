@@ -103,7 +103,7 @@ export default {
         )
         this.$toast.success('تم تسجيل الدخول بنجاح')
       } catch (e) {
-        console.error(e)
+        console.error(e.response)
         this.$toast.error('خطأ في تسجيل الدخول...')
       }
     },

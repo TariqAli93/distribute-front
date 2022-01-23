@@ -56,10 +56,10 @@ export default {
     // baseURL: 'http://10.0.6.64:6789/api/'
   },
 
-  server: {
-    port: 5678,
-    host: '0'
-  },
+  // server: {
+  //   port: 5678,
+  //   host: '0'
+  // },
 
   toast: {
     position: 'top-center',
